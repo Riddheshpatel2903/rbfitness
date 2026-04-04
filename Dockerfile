@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.4-cli
 
 RUN apt-get update && apt-get install -y \
     git unzip curl libpq-dev \
@@ -10,6 +10,7 @@ WORKDIR /app
 COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
+
 RUN chmod -R 777 storage bootstrap/cache
 
 RUN cp .env.example .env || true
