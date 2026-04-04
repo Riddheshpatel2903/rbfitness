@@ -304,6 +304,7 @@
         .responsive-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         html, body { overflow-x: hidden; width: 100%; position: relative; }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
 <body>
