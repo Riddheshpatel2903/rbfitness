@@ -22,7 +22,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('/assets/gym_bg_login.jpg');
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('{{ asset('assets/gym_bg_login.jpg') }}');
             background-size: cover;
             background-position: center;
         }
@@ -118,7 +118,7 @@
 <body>
     <div class="login-card">
         <div class="login-logo">
-            <img src="/assets/logo.png" alt="RB Fitness">
+            <img src="{{ asset('assets/logo.png') }}" alt="RB Fitness">
         </div>
         <h1 class="login-title">Admin <span>Login</span></h1>
         

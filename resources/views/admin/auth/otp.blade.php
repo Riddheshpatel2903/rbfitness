@@ -22,7 +22,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('/assets/gym_bg_login.jpg');
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('{{ asset('assets/gym_bg_login.jpg') }}');
             background-size: cover;
             background-position: center;
         }
@@ -119,7 +119,7 @@
 <body>
     <div class="otp-card">
         <div class="otp-logo">
-            <img src="/assets/logo.png" alt="RB Fitness">
+            <img src="{{ asset('assets/logo.png') }}" alt="RB Fitness">
         </div>
         <h1 class="otp-title">Verify <span>OTP</span></h1>
         <p class="otp-subtitle">A verification code has been sent to your registered email address. This code expires in 5 minutes.</p>
