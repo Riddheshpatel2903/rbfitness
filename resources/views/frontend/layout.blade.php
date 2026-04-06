@@ -13,6 +13,8 @@
     content="Join RB Fitness at Atmiya Complex, Gandevi, Navsari. World-class equipment, expert trainers, and a community that elevates your fitness." />
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/png" href="{{ asset('assets/fevicon.png') }}">
+  <link rel="apple-touch-icon" href="{{ asset('assets/fevicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('assets/fevicon.png') }}" type="image/x-icon">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
   @stack('styles')
 </head>

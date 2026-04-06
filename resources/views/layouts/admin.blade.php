@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RB Admin - @yield('title')</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/fevicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/fevicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/fevicon.png') }}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
