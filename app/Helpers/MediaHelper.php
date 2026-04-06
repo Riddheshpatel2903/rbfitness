@@ -13,7 +13,7 @@ class MediaHelper
      */
     public static function upload($file, $folder = 'general')
     {
-        $cloudinaryUrl = env('CLOUDINARY_URL');
+        $cloudinaryUrl = config('cloudinary.url');
 
         if ($cloudinaryUrl) {
             try {
