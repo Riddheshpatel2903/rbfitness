@@ -21,19 +21,19 @@
         <div class="stats-inner">
           <div class="stats-grid">
             <div>
-              <div class="stat-value">500+</div>
+              <div class="stat-value">{{ $memberCount > 0 ? $memberCount . '+' : ($settings['hero_members'] ?? '500+') }}</div>
               <div class="stat-label">Members</div>
             </div>
             <div>
-              <div class="stat-value">15+</div>
+              <div class="stat-value">{{ $trainerCount > 0 ? $trainerCount . '+' : ($settings['hero_trainers'] ?? '5+') }}</div>
               <div class="stat-label">Trainers</div>
             </div>
             <div>
-              <div class="stat-value">50+</div>
+              <div class="stat-value">{{ $settings['hero_equipment'] ?? '50+' }}</div>
               <div class="stat-label">Equipment</div>
             </div>
             <div>
-              <div class="stat-value">7 Days</div>
+              <div class="stat-value">{{ $settings['hero_open_days'] ?? '6 Days' }}</div>
               <div class="stat-label">Open</div>
             </div>
           </div>

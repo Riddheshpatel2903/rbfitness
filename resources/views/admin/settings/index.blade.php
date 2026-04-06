@@ -40,9 +40,24 @@
             </div>
         </div>
 
+        <h3 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; margin-top: 3rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; color: var(--gym-yellow);">Hero Stats Bar</h3>
+        <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 1.5rem;">Members and Trainers are pulled automatically from real database counts. You can override Equipment and Open Days display text below.</p>
+
+        <div class="responsive-grid" style="margin-bottom: 2rem;">
+            <div>
+                <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Equipment Count Display</label>
+                <input type="text" name="hero_equipment" value="{{ $settings['hero_equipment'] ?? '50+' }}" placeholder="e.g. 50+" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Open Days Display</label>
+                <input type="text" name="hero_open_days" value="{{ $settings['hero_open_days'] ?? '6 Days' }}" placeholder="e.g. 6 Days" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;">
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem;">
             SAVE ALL SETTINGS
         </button>
     </form>
 </div>
 @endsection
+

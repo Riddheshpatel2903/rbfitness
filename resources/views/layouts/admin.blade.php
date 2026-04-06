@@ -212,13 +212,22 @@
         /* Menu Toggle */
         .btn-menu {
             display: none;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            padding: 0.75rem;
+            background: linear-gradient(135deg, rgba(255,223,0,0.15), rgba(255,223,0,0.05));
+            border: 1px solid rgba(255,223,0,0.3);
+            color: var(--gym-yellow);
+            padding: 0.65rem 0.85rem;
             border-radius: 0.75rem;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            font-size: 1.1rem;
+            line-height: 1;
+            box-shadow: 0 0 12px rgba(255,223,0,0.15);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .btn-menu:hover, .btn-menu:active {
+            background: rgba(255,223,0,0.25);
+            box-shadow: 0 0 20px rgba(255,223,0,0.3);
         }
 
         .sidebar-overlay {
@@ -252,7 +261,7 @@
         @media (max-width: 1024px) {
             .sidebar { transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
             .sidebar.active { transform: translateX(0); }
-            .btn-menu { display: block; }
+            .btn-menu { display: inline-flex; align-items: center; justify-content: center; }
             .sidebar-overlay.active { display: block; }
             .main-content { margin-left: 0; width: 100%; padding: 2rem; overflow-x: hidden; }
             .header { margin-bottom: 2rem; }
@@ -265,35 +274,41 @@
 
         @media (max-width: 576px) {
             .main-content { padding: 1rem 0; }
-            .header { margin-bottom: 2rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; padding: 0 1.25rem; }
-            .page-title { font-size: 1.25rem; letter-spacing: 0.1em; }
-            .card { padding: 1.25rem 1rem; border-radius: 1.25rem; margin: 0 auto 1.5rem !important; width: 92% !important; max-width: 92%; box-sizing: border-box; display: block; }
+            .header { margin-bottom: 1.5rem; flex-direction: row; align-items: center; justify-content: flex-start; gap: 0.75rem; padding: 0 1rem; flex-wrap: nowrap; }
+            .page-title { font-size: 1.1rem; letter-spacing: 0.05em; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .card { padding: 1rem 0.875rem; border-radius: 1.25rem; margin: 0 auto 1.25rem !important; width: 94% !important; max-width: 94%; box-sizing: border-box; display: block; }
+            .card h2, .card h3 { font-size: 1rem !important; }
+            .card label { font-size: 0.75rem !important; }
+            .card input, .card select, .card textarea { font-size: 0.85rem !important; padding: 0.6rem 0.75rem !important; }
             .grid-stats { display: flex; flex-direction: column; gap: 0; margin-bottom: 0; }
             .grid-dashboard { display: flex; flex-direction: column; gap: 0; }
-            .card h2 { font-size: 1.75rem !important; }
-            .btn { width: 100%; }
+            .btn { width: 100%; justify-content: center; text-align: center; font-size: 0.8rem; padding: 0.75rem 1rem; }
             .status-badge { padding: 0.25rem 0.75rem; font-size: 0.65rem; }
-            
             /* Compact table for mobile */
-            td, th { padding: 0.85rem 0.5rem !important; font-size: 0.75rem !important; }
-            .btn-sms { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
-            .stack-column { display: flex; flex-direction: column; gap: 1.5rem !important; }
+            td, th { padding: 0.75rem 0.4rem !important; font-size: 0.72rem !important; white-space: nowrap; }
+            .btn-sms { padding: 0.4rem 0.7rem; font-size: 0.7rem; justify-content: center; text-align: center; width: 100%; }
             .btn-text-mobile { display: none; }
-            .actions-stack { display: flex !important; flex-direction: column !important; gap: 0.5rem !important; align-items: stretch !important; width: 100% !important; }
+            .actions-stack { display: flex !important; flex-direction: column !important; gap: 0.4rem !important; align-items: stretch !important; width: 100% !important; }
+            .actions-stack .btn, .actions-stack .btn-sms { width: 100% !important; justify-content: center !important; text-align: center !important; }
             .filter-container { flex-direction: column !important; align-items: stretch !important; width: 100% !important; gap: 1rem !important; }
             .filter-container input { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
-            .responsive-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+            .responsive-grid { grid-template-columns: 1fr !important; gap: 1.25rem !important; }
+            /* Form cards mobile fix */
+            .form-group { margin-bottom: 1rem !important; }
+            .form-row { flex-direction: column !important; gap: 0 !important; }
         }
 
         @media (max-width: 400px) {
-            .main-content { padding: 0.75rem 0; }
-            .header { padding: 0 1rem; margin-bottom: 1.5rem; }
-            .page-title { font-size: 1rem !important; }
-            .card { padding: 0.85rem 0.6rem !important; border-radius: 0.85rem; width: 94% !important; max-width: 94%; }
-            .card h2, .card h3 { font-size: 1.15rem !important; }
-            .stat-value { font-size: 1.35rem !important; }
-            .stat-icon-wrapper { padding: 0.5rem; font-size: 0.9rem; }
-            td, th { padding: 0.75rem 0.4rem !important; font-size: 0.7rem !important; }
+            .main-content { padding: 0.5rem 0; }
+            .header { padding: 0 0.75rem; margin-bottom: 1rem; gap: 0.5rem; }
+            .page-title { font-size: 0.9rem !important; }
+            .card { padding: 0.75rem 0.6rem !important; border-radius: 0.85rem; width: 96% !important; max-width: 96%; }
+            .card h2, .card h3 { font-size: 0.95rem !important; }
+            .stat-value { font-size: 1.25rem !important; }
+            .stat-icon-wrapper { padding: 0.5rem; font-size: 0.85rem; }
+            td, th { padding: 0.6rem 0.35rem !important; font-size: 0.68rem !important; }
+            .btn { font-size: 0.75rem; padding: 0.6rem 0.75rem; }
+            .btn-menu { padding: 0.55rem 0.7rem; font-size: 1rem; }
         }
 
         .stack-column { display: flex; flex-direction: column; gap: 2rem; }
