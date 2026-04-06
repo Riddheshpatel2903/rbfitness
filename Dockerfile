@@ -23,4 +23,4 @@ EXPOSE 10000
 
 CMD php artisan migrate --force && \
     php artisan db:seed --force && \
-    php -S 0.0.0.0:10000 -t public
+    php -d upload_max_filesize=100M -d post_max_size=100M -d memory_limit=256M -S 0.0.0.0:10000 -t public
