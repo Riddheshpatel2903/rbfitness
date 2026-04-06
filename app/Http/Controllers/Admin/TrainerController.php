@@ -26,14 +26,13 @@ class TrainerController extends Controller
             'name' => 'required|string|max:255',
             'specialization' => 'required|string|max:255',
             'bio' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:10240', // 10MB
         ]);
 
-        $data = $request->all();
+        $data = $request->except('image');
         
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('trainers', 'public');
-            $data['image'] = $path;
+            $data['image'] = \App\Helpers\MediaHelper::upload($request->file('image'), 'trainers');
         }
 
         Trainer::create($data);
@@ -52,17 +51,17 @@ class TrainerController extends Controller
             'name' => 'required|string|max:255',
             'specialization' => 'required|string|max:255',
             'bio' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:10240', // 10MB
         ]);
 
-        $data = $request->all();
+        $data = $request->except('image');
         
         if ($request->hasFile('image')) {
+            // Delete old file if it's local
             if ($trainer->image) {
-                Storage::disk('public')->delete($trainer->image);
+                \App\Helpers\MediaHelper::delete($trainer->image);
             }
-            $path = $request->file('image')->store('trainers', 'public');
-            $data['image'] = $path;
+            $data['image'] = \App\Helpers\MediaHelper::upload($request->file('image'), 'trainers');
         }
 
         $trainer->update($data);

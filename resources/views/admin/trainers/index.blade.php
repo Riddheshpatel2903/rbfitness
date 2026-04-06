@@ -26,7 +26,9 @@
             <tr>
                 <td class="hide-mobile">#{{ $trainer->id }}</td>
                 <td>
-                    <img src="{{ $trainer->image ? asset('storage/' . $trainer->image) : asset('assets/TRAINER.JPEG') }}" alt="{{ $trainer->name }}" style="height: 40px; width: 40px; border-radius: 999px; object-fit: cover;">
+                    <img src="{{ (str_starts_with($trainer->image, 'http')) ? $trainer->image : asset('storage/' . ($trainer->image ?? '')) }}" 
+                         onerror="this.src='/assets/TRAINER.JPEG'" 
+                         alt="{{ $trainer->name }}" style="height: 40px; width: 40px; border-radius: 999px; object-fit: cover;">
                 </td>
                 <td style="font-weight: 600;">{{ $trainer->name }}</td>
                 <td class="hide-mobile">{{ $trainer->specialization }}</td>

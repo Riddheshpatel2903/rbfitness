@@ -25,14 +25,13 @@ class FacilityController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,jpg,png,webp,mp4,mov,MOV|max:51200', // 50MB
         ]);
 
-        $data = $request->all();
+        $data = $request->except('image');
         
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('facilities', 'public');
-            $data['image'] = $path;
+            $data['image'] = \App\Helpers\MediaHelper::upload($request->file('image'), 'facilities');
         }
 
         Facility::create($data);
@@ -50,17 +49,16 @@ class FacilityController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,jpg,png,webp,mp4,mov,MOV|max:51200', // 50MB
         ]);
 
-        $data = $request->all();
+        $data = $request->except('image');
         
         if ($request->hasFile('image')) {
             if ($facility->image) {
-                Storage::disk('public')->delete($facility->image);
+                \App\Helpers\MediaHelper::delete($facility->image);
             }
-            $path = $request->file('image')->store('facilities', 'public');
-            $data['image'] = $path;
+            $data['image'] = \App\Helpers\MediaHelper::upload($request->file('image'), 'facilities');
         }
 
         $facility->update($data);

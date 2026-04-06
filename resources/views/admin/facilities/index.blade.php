@@ -26,10 +26,11 @@
                 <td class="hide-mobile">#{{ $facility->id }}</td>
                 <td>
                     @if($facility->image)
-                        @if(Str::endsWith($facility->image, ['.mp4', '.mov', '.MOV']))
-                            <video src="{{ asset('storage/' . $facility->image) }}" style="height: 40px; width: 60px; border-radius: 0.5rem; object-fit: cover;" muted></video>
+                        @php $src = str_starts_with($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image); @endphp
+                        @if(Str::endsWith($facility->image, ['.mp4', '.mov', '.MOV']) || str_contains($facility->image, 'video/upload'))
+                            <video src="{{ $src }}" style="height: 40px; width: 60px; border-radius: 0.5rem; object-fit: cover;" muted></video>
                         @else
-                            <img src="{{ asset('storage/' . $facility->image) }}" alt="{{ $facility->title }}" style="height: 40px; width: 60px; border-radius: 0.5rem; object-fit: cover;">
+                            <img src="{{ $src }}" alt="{{ $facility->title }}" style="height: 40px; width: 60px; border-radius: 0.5rem; object-fit: cover;">
                         @endif
                     @else
                         <span style="opacity: 0.3;">No Media</span>
