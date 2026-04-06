@@ -5,7 +5,7 @@
 @section('title_suffix', isset($plan) ? 'EDIT' : 'CREATE')
 
 @section('header_actions')
-<a href="{{ route('admin.plans.index') }}" class="btn btn-ghost">← BACK TO PLANS</a>
+<a href="{{ route('admin.plans.index') }}" class="btn btn-ghost">← Back</a>
 @endsection
 
 @section('content')

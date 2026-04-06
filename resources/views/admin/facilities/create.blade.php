@@ -5,7 +5,7 @@
 @section('title_suffix', isset($facility) ? 'EDIT FACILITY' : 'ADD FACILITY')
 
 @section('header_actions')
-<a href="{{ route('admin.facilities.index') }}" class="btn btn-ghost">← BACK TO FACILITIES</a>
+<a href="{{ route('admin.facilities.index') }}" class="btn btn-ghost">← Back</a>
 @endsection
 
 @section('content')

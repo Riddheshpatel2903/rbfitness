@@ -5,7 +5,7 @@
 @section('title_suffix', 'REGISTRATION')
 
 @section('header_actions')
-<a href="{{ route('admin.members.index') }}" class="btn btn-ghost">← BACK TO MEMBERS</a>
+<a href="{{ route('admin.members.index') }}" class="btn btn-ghost">← Back</a>
 @endsection
 
 @section('content')

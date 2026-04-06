@@ -5,7 +5,7 @@
 @section('title_suffix', isset($planCategory) ? 'EDIT CATEGORY' : 'ADD CATEGORY')
 
 @section('header_actions')
-<a href="{{ route('admin.plan_categories.index') }}" class="btn btn-ghost">← BACK TO CATEGORIES</a>
+<a href="{{ route('admin.plan_categories.index') }}" class="btn btn-ghost">← Back</a>
 @endsection
 
 @section('content')

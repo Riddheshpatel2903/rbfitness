@@ -5,7 +5,7 @@
 @section('title_suffix', 'PAYMENT')
 
 @section('header_actions')
-<a href="{{ route('admin.payments.index') }}" class="btn btn-ghost">← BACK TO PAYMENTS</a>
+<a href="{{ route('admin.payments.index') }}" class="btn btn-ghost">← Back</a>
 @endsection
 
 @section('content')

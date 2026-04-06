@@ -209,26 +209,46 @@
         }
         .btn-sms i { font-size: 0.9rem; }
 
-        /* Menu Toggle */
+        /* Menu Toggle — Hamburger */
         .btn-menu {
             display: none;
             background: linear-gradient(135deg, rgba(255,223,0,0.15), rgba(255,223,0,0.05));
             border: 1px solid rgba(255,223,0,0.3);
             color: var(--gym-yellow);
-            padding: 0.65rem 0.85rem;
-            border-radius: 0.75rem;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 0.65rem;
             cursor: pointer;
             backdrop-filter: blur(10px);
-            font-size: 1.1rem;
-            line-height: 1;
             box-shadow: 0 0 12px rgba(255,223,0,0.15);
             transition: all 0.3s ease;
             flex-shrink: 0;
+            align-items: center;
+            justify-content: center;
         }
         .btn-menu:hover, .btn-menu:active {
             background: rgba(255,223,0,0.25);
             box-shadow: 0 0 20px rgba(255,223,0,0.3);
         }
+        /* Hamburger lines */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 20px;
+        }
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: var(--gym-yellow);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger span:nth-child(2) { width: 14px; }
+        .btn-menu.open .hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .btn-menu.open .hamburger span:nth-child(2) { opacity: 0; width: 0; }
+        .btn-menu.open .hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
         .sidebar-overlay {
             display: none;
@@ -282,11 +302,15 @@
             .card input, .card select, .card textarea { font-size: 0.85rem !important; padding: 0.6rem 0.75rem !important; }
             .grid-stats { display: flex; flex-direction: column; gap: 0; margin-bottom: 0; }
             .grid-dashboard { display: flex; flex-direction: column; gap: 0; }
-            .btn { width: 100%; justify-content: center; text-align: center; font-size: 0.8rem; padding: 0.75rem 1rem; }
+            .btn { font-size: 0.8rem; padding: 0.6rem 0.9rem; }
+            /* Only action-stack buttons stretch full width */
+            .actions-stack .btn { width: 100%; justify-content: center; text-align: center; }
+            /* Header action buttons stay compact */
+            .header .btn { width: auto !important; padding: 0.55rem 0.85rem; font-size: 0.75rem; }
             .status-badge { padding: 0.25rem 0.75rem; font-size: 0.65rem; }
             /* Compact table for mobile */
             td, th { padding: 0.75rem 0.4rem !important; font-size: 0.72rem !important; white-space: nowrap; }
-            .btn-sms { padding: 0.4rem 0.7rem; font-size: 0.7rem; justify-content: center; text-align: center; width: 100%; }
+            .btn-sms { padding: 0.4rem 0.65rem; font-size: 0.7rem; justify-content: center; text-align: center; width: 100%; gap: 0.3rem; }
             .btn-text-mobile { display: none; }
             .actions-stack { display: flex !important; flex-direction: column !important; gap: 0.4rem !important; align-items: stretch !important; width: 100% !important; }
             .actions-stack .btn, .actions-stack .btn-sms { width: 100% !important; justify-content: center !important; text-align: center !important; }
@@ -365,8 +389,12 @@
     <main class="main-content">
         <div class="header">
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <button type="button" class="btn-menu" id="toggleSidebar">
-                    <i class="fas fa-bars"></i>
+                <button type="button" class="btn-menu" id="toggleSidebar" aria-label="Toggle menu">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </button>
                 <h1 class="page-title">@yield('title_prefix', 'RB') <span>@yield('title_suffix', 'Admin')</span></h1>
             </div>
@@ -391,6 +419,7 @@
             toggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
+                toggle.classList.toggle('open');
             });
         }
 
@@ -398,6 +427,7 @@
             overlay.addEventListener('click', () => {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
+                toggle.classList.remove('open');
             });
         }
     </script>

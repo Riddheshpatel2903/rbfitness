@@ -5,7 +5,7 @@
 @section('title_suffix', isset($trainer) ? 'EDIT TRAINER' : 'ADD TRAINER')
 
 @section('header_actions')
-<a href="{{ route('admin.trainers.index') }}" class="btn btn-ghost">← BACK TO TRAINERS</a>
+<a href="{{ route('admin.trainers.index') }}" class="btn btn-ghost">← Back</a>
 @endsection
 
 @section('content')
