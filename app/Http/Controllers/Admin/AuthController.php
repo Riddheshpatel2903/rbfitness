@@ -37,33 +37,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             RateLimiter::clear($throttleKey);
-            $user = Auth::user();
 
-            // BYPASS OTP FOR LOCAL DEVELOPMENT
-            if (config('app.env') === 'local') {
-                $request->session()->put('admin_otp_verified', true);
-                return redirect()->route('admin.dashboard');
-            }
-            
-            // Generate OTP
-            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-            // Save OTP with 5-minute expiry
-            Otp::updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'otp' => Hash::make($otp),
-                    'expires_at' => Carbon::now()->addMinutes(5),
-                ]
-            );
-
-            // Send Email
-            Mail::to($user->email)->send(new OtpMail($otp));
-
-            $request->session()->put('admin_auth_user_id', $user->id);
-            $request->session()->put('admin_otp_verified', false);
-
-            return redirect()->route('admin.otp.show');
+            // OTP disabled — go straight to dashboard
+            $request->session()->put('admin_otp_verified', true);
+            return redirect()->route('admin.dashboard');
         }
 
         RateLimiter::hit($throttleKey);
