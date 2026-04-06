@@ -82,12 +82,16 @@
       <div class="facilities-grid">
         @forelse($facilities as $index => $facility)
         <div class="facility-card reveal reveal-delay-{{ ($index % 3) + 1 }}">
-          @if(Str::endsWith($facility->image, ['.mp4', '.mov', '.MOV']))
+          @php 
+            $f_src = str_starts_with($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image);
+            $is_video = Str::endsWith($facility->image, ['.mp4', '.mov', '.MOV']) || str_contains($facility->image, 'video/upload');
+          @endphp
+          @if($is_video)
             <video autoplay muted loop playsinline preload="auto">
-              <source src="{{ asset('storage/' . $facility->image) }}" type="video/mp4" />
+              <source src="{{ $f_src }}" type="video/mp4" />
             </video>
           @else
-            <img src="{{ asset('storage/' . $facility->image) }}" alt="{{ $facility->title }}" loading="lazy" />
+            <img src="{{ $f_src }}" alt="{{ $facility->title }}" loading="lazy" />
           @endif
           <div class="facility-glass-overlay"></div>
           <div class="facility-inner-border"></div>
@@ -148,7 +152,12 @@
         @foreach($trainers as $trainer)
         <div class="trainer-card reveal">
           <div class="trainer-photo">
-            <img src="{{ $trainer->image ? asset('storage/' . $trainer->image) : asset('assets/TRAINER.JPEG') }}" alt="{{ $trainer->name }}" loading="lazy" />
+            @php 
+                $t_src = str_starts_with($trainer->image, 'http') ? $trainer->image : asset('storage/' . ($trainer->image ?? '')); 
+            @endphp
+            <img src="{{ $trainer->image ? $t_src : asset('assets/TRAINER.JPEG') }}" 
+                 onerror="this.src='/assets/TRAINER.JPEG'"
+                 alt="{{ $trainer->name }}" loading="lazy" />
           </div>
           <div class="trainer-info">
             <h3 class="trainer-name">{{ $trainer->name }}</h3>
