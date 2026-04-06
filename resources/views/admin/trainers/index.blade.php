@@ -5,7 +5,7 @@
 @section('title_suffix', 'TRAINERS')
 
 @section('header_actions')
-<a href="{{ route('admin.trainers.create') }}" class="btn btn-primary">+ ADD NEW TRAINER</a>
+<a href="{{ route('admin.trainers.create') }}" class="btn btn-primary"><i class="fas fa-user-plus"></i> Add</a>
 @endsection
 
 @section('content')

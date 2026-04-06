@@ -5,7 +5,7 @@
 @section('title_suffix', 'CATEGORIES')
 
 @section('header_actions')
-<a href="{{ route('admin.plan_categories.create') }}" class="btn btn-primary">+ ADD CATEGORY</a>
+<a href="{{ route('admin.plan_categories.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add</a>
 @endsection
 
 @section('content')

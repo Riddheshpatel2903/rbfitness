@@ -5,7 +5,7 @@
 @section('title_suffix', 'FACILITIES')
 
 @section('header_actions')
-<a href="{{ route('admin.facilities.create') }}" class="btn btn-primary">+ ADD NEW FACILITY</a>
+<a href="{{ route('admin.facilities.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add</a>
 @endsection
 
 @section('content')

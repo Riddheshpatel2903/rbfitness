@@ -5,7 +5,7 @@
 @section('title_suffix', 'MEMBERS')
 
 @section('header_actions')
-<a href="{{ route('admin.members.create') }}" class="btn btn-primary">+ REGISTER NEW MEMBER</a>
+<a href="{{ route('admin.members.create') }}" class="btn btn-primary"><i class="fas fa-user-plus"></i> Register</a>
 @endsection
 
 @section('content')

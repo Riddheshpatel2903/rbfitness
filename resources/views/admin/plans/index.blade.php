@@ -5,7 +5,7 @@
 @section('title_suffix', 'PLANS')
 
 @section('header_actions')
-<a href="{{ route('admin.plans.create') }}" class="btn btn-primary">+ ADD NEW PLAN</a>
+<a href="{{ route('admin.plans.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add</a>
 @endsection
 
 @section('content')

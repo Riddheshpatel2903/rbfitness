@@ -5,7 +5,7 @@
 @section('title_suffix', 'PAYMENTS')
 
 @section('header_actions')
-<a href="{{ route('admin.payments.create') }}" class="btn btn-primary">+ RECORD OFFLINE PAYMENT</a>
+<a href="{{ route('admin.payments.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Record</a>
 @endsection
 
 @section('content')

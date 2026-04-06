@@ -93,14 +93,14 @@
                     <td class="hide-mobile" style="opacity: 0.7;">{{ $member->plan?->name }}</td>
                     <td>
                         <div class="actions-stack">
-                            <a href="{{ route('admin.payments.create', ['member_id' => $member->id]) }}" class="btn btn-primary" style="padding: 0.5rem 0.8rem; font-size: 0.7rem;">
-                                <i class="fas fa-money-bill-wave"></i> <span>COLLECT <span class="btn-text-mobile">FEES</span></span>
+                            <a href="{{ route('admin.payments.create', ['member_id' => $member->id]) }}" class="btn btn-primary" style="padding: 0.5rem 0.8rem; font-size: 0.7rem;" title="Collect Fees">
+                                <i class="fas fa-money-bill-wave"></i> Collect
                             </a>
                             @if($member->phone)
                             <button onclick="sendSMS('{{ $member->phone }}', '{{ $member->name }}', '{{ $member->expiry_date ? \Carbon\Carbon::parse($member->expiry_date)->format('d M') : '' }}')" 
                                     class="btn-sms" 
-                                    title="Send SMS via phone">
-                                <i class="fas fa-sms"></i> <span>SEND <span class="btn-text-mobile">SMS</span></span>
+                                    title="Send SMS">
+                                <i class="fas fa-sms"></i> SMS
                             </button>
                             @endif
                         </div>
@@ -137,8 +137,8 @@
                         @if($member->phone)
                         <button onclick="sendSMS('{{ $member->phone }}', '{{ $member->name }}', '{{ \Carbon\Carbon::parse($member->expiry_date)->format('d M') }}')" 
                                 class="btn-sms" 
-                                title="Send SMS via phone">
-                            <i class="fas fa-sms"></i> <span>SEND <span class="btn-text-mobile">SMS</span></span>
+                                title="Send SMS">
+                            <i class="fas fa-sms"></i> SMS
                         </button>
                         @else
                         <span style="opacity: 0.3;" title="Phone missing"><i class="fas fa-sms"></i></span>
@@ -177,8 +177,8 @@
                         <button onclick="sendSMS('{{ $member->phone }}', '{{ $member->name }}', '{{ \Carbon\Carbon::parse($member->expiry_date)->format('d M') }}', 'expired')" 
                                 class="btn-sms" 
                                 style="background: #ff4d4d;"
-                                title="Send SMS via phone">
-                            <i class="fas fa-sms"></i> <span>SEND <span class="btn-text-mobile">SMS</span></span>
+                                title="Send SMS">
+                            <i class="fas fa-sms"></i> SMS
                         </button>
                         @else
                         <span style="opacity: 0.3;" title="Phone missing"><i class="fas fa-sms"></i></span>
