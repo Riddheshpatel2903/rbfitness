@@ -59,6 +59,12 @@
             </div>
         </div>
 
+        <div style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.2); padding: 1rem; border-radius: 0.75rem; margin-bottom: 2rem;">
+            <p style="color: var(--gym-yellow); font-size: 0.85rem; margin: 0; font-weight: 500;">
+                <i class="fas fa-info-circle"></i> A one-time joining fee of <strong>₹200</strong> will be automatically added to the initial balance.
+            </p>
+        </div>
+
         <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 1.5rem;">Note: Expiry date will be automatically calculated based on the selected plan duration.</p>
 
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem;">

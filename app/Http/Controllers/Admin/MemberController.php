@@ -66,12 +66,12 @@ class MemberController extends Controller
         $data = $request->all();
         
         // Initial enrolment setup:
-        // 1. Set debt equal to the plan price (-price).
+        // 1. Set debt equal to the plan price + ₹200 joining fee.
         // 2. Set expiry_date to join_date (effectively starting as expired/due).
         $plan = Plan::findOrFail($request->plan_id);
         $data['expiry_date'] = $request->join_date;
         $data['status'] = 'expired';
-        $data['balance'] = -($plan->price);
+        $data['balance'] = -($plan->price + 200);
 
         Member::create($data);
 

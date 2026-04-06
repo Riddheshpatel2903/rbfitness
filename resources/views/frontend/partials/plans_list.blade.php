@@ -10,6 +10,9 @@
                 <span class="plan-price-value">₹{{ number_format($plan->price, 0) }}</span>
                 <span class="plan-price-period">/{{ $plan->duration_days }} days</span>
             </div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem; font-weight: 500;">
+                + ₹200 Joining Fees (First time only)
+            </div>
         </div>
         <ul class="plan-features">
             @if($plan->description)
