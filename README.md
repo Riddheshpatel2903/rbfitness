@@ -1,9 +1,5 @@
 # RB Fitness - Gym Management System
 
-![RB Fitness](https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg)
-
-RB Fitness is a comprehensive Gym Management System built with **Laravel 13**, designed to streamline gym operations, member management, and payment tracking. This system provides a robust administrative dashboard to manage membership plans, trainers, facilities, and automated communication.
-
 ## 🚀 Features
 
 - **Admin Dashboard**: Real-time overview of gym statistics, including active members and upcoming renewals.
@@ -79,6 +75,3 @@ For testing purposes, you can use the following default admin credentials (if se
 - `resources/views/frontend`: Public-facing website templates.
 - `database/seeders`: Initial data setup for plans and admin accounts.
 
----
-
-Built with ❤️ for RB Fitness.
