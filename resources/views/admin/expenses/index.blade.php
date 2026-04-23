@@ -5,8 +5,14 @@
 @section('title_suffix', 'REVENUE')
 
 @section('header_actions')
-<a href="{{ route('admin.expenses.export') }}" class="btn btn-ghost"><i class="fas fa-file-csv"></i> EXPORT MONTHLY CSV</a>
-<a href="{{ route('admin.expenses.create') }}" class="btn btn-primary">+ ADD EXPENSE</a>
+<div style="display: flex; gap: 1rem; align-items: center;">
+    <a href="{{ route('admin.expenses.export') }}" class="btn btn-ghost" style="border: 1px solid rgba(255,255,255,0.2); padding: 0.75rem 1.25rem; font-size: 0.85rem; color: #fff; opacity: 0.9;">
+        <i class="fas fa-file-csv" style="margin-right: 0.5rem; color: var(--gym-yellow);"></i> EXPORT CSV
+    </a>
+    <a href="{{ route('admin.expenses.create') }}" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em;">
+        + ADD EXPENSE
+    </a>
+</div>
 @endsection
 
 @section('content')
