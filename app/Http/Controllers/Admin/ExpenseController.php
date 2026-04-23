@@ -104,4 +104,43 @@ class ExpenseController extends Controller
 
         return redirect()->route('admin.expenses.index')->with('success', 'Expense deleted successfully.');
     }
+
+    public function exportCsv()
+    {
+        $expenses = Expense::whereMonth('transaction_date', now()->month)
+            ->whereYear('transaction_date', now()->year)
+            ->latest('transaction_date')
+            ->get();
+
+        $fileName = 'expenses_' . now()->format('M_Y') . '.csv';
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Date', 'Title', 'Category', 'Amount', 'Method', 'Description'];
+
+        $callback = function() use($expenses, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($expenses as $expense) {
+                fputcsv($file, [
+                    $expense->transaction_date->format('Y-m-d'),
+                    $expense->title,
+                    $expense->category,
+                    $expense->amount,
+                    $expense->payment_method,
+                    $expense->description,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

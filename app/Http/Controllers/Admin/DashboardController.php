@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Member;
 use App\Models\Plan;
 use App\Models\Payment;
+use App\Models\Expense;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -30,6 +31,7 @@ class DashboardController extends Controller
                 ->where('balance', '<', 0)
                 ->orderBy('balance', 'asc')
                 ->take(5)->get(),
+            'total_profit' => Payment::sum('amount') - Expense::sum('amount'),
         ];
 
         if (request()->ajax()) {

@@ -76,6 +76,19 @@
         </div>
         <div class="stat-indicator" style="background: linear-gradient(90deg, #00ff88, transparent);"></div>
     </div>
+
+    <div class="card stat-card" style="position: relative; overflow: hidden;">
+        <div class="stat-card-inner">
+            <div>
+                <p class="stat-label">TOTAL PROFIT</p>
+                <h2 class="stat-value" style="color: var(--gym-yellow);">₹{{ number_format($stats['total_profit'], 0) }}</h2>
+            </div>
+            <div class="stat-icon-wrapper" style="color: var(--gym-yellow);">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+        <div class="stat-indicator" style="background: linear-gradient(90deg, var(--gym-yellow), transparent);"></div>
+    </div>
 </div>
 
 <!-- 1. Top Pending Dues (First Priority) -->
@@ -286,6 +299,7 @@ function sendSMS(phone, name, expiryDate, status = 'expiring soon') {
             values[2].textContent = stats.total_plans;
             values[3].textContent = '₹' + Math.abs(stats.total_dues).toLocaleString();
             values[4].textContent = '₹' + stats.total_advance.toLocaleString();
+            values[5].textContent = '₹' + stats.total_profit.toLocaleString();
             
             // Note: For tables we'd need to re-render partials, but let's keep it simple for now.
         } catch (err) {

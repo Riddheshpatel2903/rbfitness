@@ -5,6 +5,7 @@
 @section('title_suffix', 'REVENUE')
 
 @section('header_actions')
+<a href="{{ route('admin.expenses.export') }}" class="btn btn-ghost"><i class="fas fa-file-csv"></i> EXPORT MONTHLY CSV</a>
 <a href="{{ route('admin.expenses.create') }}" class="btn btn-primary">+ ADD EXPENSE</a>
 @endsection
 
