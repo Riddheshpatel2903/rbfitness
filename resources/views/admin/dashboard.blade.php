@@ -4,6 +4,12 @@
 @section('title_prefix', 'GYM')
 @section('title_suffix', 'DASHBOARD')
 
+@section('header_actions')
+<button id="refresh-stats" class="btn btn-ghost" style="border: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">
+    <i class="fas fa-sync-alt" id="refresh-icon"></i> Refresh Stats
+</button>
+@endsection
+
 @section('content')
 <div class="grid-stats">
     <div class="card stat-card" style="position: relative; overflow: hidden;">
@@ -254,6 +260,42 @@ function sendSMS(phone, name, expiryDate, status = 'expiring soon') {
     
     window.location.href = url;
 }
+
+// ─── AJAX Stats Refresh ───────────────────────────────────────────────────
+(function() {
+    'use strict';
+    const refreshBtn = document.getElementById('refresh-stats');
+    const refreshIcon = document.getElementById('refresh-icon');
+
+    if (!refreshBtn) return;
+
+    refreshBtn.addEventListener('click', async () => {
+        refreshBtn.disabled = true;
+        refreshIcon.classList.add('fa-spin');
+
+        try {
+            const response = await fetch(window.location.href, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const stats = await response.json();
+
+            // Update DOM
+            const values = document.querySelectorAll('.stat-value');
+            values[0].textContent = stats.total_members;
+            values[1].textContent = stats.active_members;
+            values[2].textContent = stats.total_plans;
+            values[3].textContent = '₹' + Math.abs(stats.total_dues).toLocaleString();
+            values[4].textContent = '₹' + stats.total_advance.toLocaleString();
+            
+            // Note: For tables we'd need to re-render partials, but let's keep it simple for now.
+        } catch (err) {
+            console.error(err);
+        } finally {
+            refreshBtn.disabled = false;
+            refreshIcon.classList.remove('fa-spin');
+        }
+    });
+})();
 </script>
 @endpush
 @endsection

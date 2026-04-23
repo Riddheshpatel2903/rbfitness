@@ -9,9 +9,24 @@ use Illuminate\Support\Facades\Storage;
 
 class TrainerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $trainers = Trainer::all();
+        $query = Trainer::query();
+
+        if ($request->search) {
+            $query->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('specialization', 'like', "%{$request->search}%");
+        }
+
+        $trainers = $query->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows' => view('admin.trainers._table', compact('trainers'))->render(),
+                'total' => $trainers->count(),
+            ]);
+        }
+
         return view('admin.trainers.index', compact('trainers'));
     }
 
@@ -72,9 +87,14 @@ class TrainerController extends Controller
     public function destroy(Trainer $trainer)
     {
         if ($trainer->image) {
-            Storage::disk('public')->delete($trainer->image);
+            \App\Helpers\MediaHelper::delete($trainer->image);
         }
         $trainer->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Trainer removed from CMS.']);
+        }
+
         return redirect()->route('admin.trainers.index')->with('success', 'Trainer removed from CMS.');
     }
 }

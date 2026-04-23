@@ -8,9 +8,23 @@ use Illuminate\Http\Request;
 
 class PlanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $plans = Plan::all();
+        $query = Plan::query();
+
+        if ($request->search) {
+            $query->where('name', 'like', "%{$request->search}%");
+        }
+
+        $plans = $query->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows' => view('admin.plans._table', compact('plans'))->render(),
+                'total' => $plans->count(),
+            ]);
+        }
+
         return view('admin.plans.index', compact('plans'));
     }
 
@@ -66,7 +80,20 @@ class PlanController extends Controller
 
     public function destroy(Plan $plan)
     {
+        // Check if plan is being used by members
+        if ($plan->members()->count() > 0) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Cannot delete plan as it is assigned to members.'], 400);
+            }
+            return back()->with('error', 'Cannot delete plan as it is assigned to members.');
+        }
+
         $plan->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Plan deleted successfully.']);
+        }
+
         return redirect()->route('admin.plans.index')->with('success', 'Plan deleted successfully.');
     }
 }

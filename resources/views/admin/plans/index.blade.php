@@ -5,57 +5,167 @@
 @section('title_suffix', 'PLANS')
 
 @section('header_actions')
-<a href="{{ route('admin.plans.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add</a>
+<a href="{{ route('admin.plans.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Plan</a>
 @endsection
 
 @section('content')
+{{-- Toast notification (AJAX feedback) --}}
+<div id="ajax-toast" style="
+    position:fixed;bottom:2rem;right:2rem;z-index:99999;
+    background:#1a1f2e;border:1px solid rgba(255,255,255,0.12);
+    border-radius:0.875rem;padding:1rem 1.5rem;
+    display:flex;align-items:center;gap:0.75rem;
+    box-shadow:0 20px 40px rgba(0,0,0,0.5);
+    transform:translateY(120%);opacity:0;
+    transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    max-width:360px;">
+    <span id="ajax-toast-icon" style="font-size:1.2rem;"></span>
+    <span id="ajax-toast-msg" style="font-size:0.9rem;font-weight:500;"></span>
+</div>
+
 <div class="card">
+    <div class="filter-container" style="margin-bottom: 2rem;">
+        <div style="position:relative;flex:1;max-width:400px;">
+            <i class="fas fa-search" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:0.4;pointer-events:none;"></i>
+            <input id="search-input" type="text" 
+                placeholder="Search plans..."
+                autocomplete="off"
+                style="width:100%;padding:0.75rem 1rem 0.75rem 2.75rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;color:#fff;box-sizing:border-box;">
+        </div>
+        <div id="search-spinner" style="display:none;opacity:0.5;font-size:0.8rem;"><i class="fas fa-circle-notch fa-spin"></i> Searching…</div>
+        <span id="total-count" style="opacity:0.45;font-size:0.82rem;white-space:nowrap;">{{ $plans->count() }} total plans</span>
+    </div>
+
     <div class="table-responsive">
         <table>
         <thead>
             <tr>
                 <th class="hide-mobile">ID</th>
                 <th>Name</th>
-                <th class="hide-mobile">Status</th>
-                <th>Duration</th>
-                <th>Price</th>
-                <th class="hide-mobile">Description</th>
+                <th class="hide-mobile">Duration</th>
+                <th class="hide-mobile">Price</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-            @forelse($plans as $plan)
-            <tr>
-                <td class="hide-mobile">#{{ $plan->id }}</td>
-                <td style="font-weight: 600;">{{ $plan->name }}</td>
-                <td class="hide-mobile">
-                    <span class="status-badge {{ $plan->is_active ? 'bg-active' : 'bg-blocked' }}">
-                        {{ $plan->is_active ? 'Active' : 'Inactive' }}
-                    </span>
-                </td>
-                <td>{{ $plan->duration_days }} Days</td>
-                <td style="color: var(--gym-yellow);">₹{{ number_format($plan->price, 2) }}</td>
-                <td class="hide-mobile" style="font-size: 0.8rem; opacity: 0.7; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    {{ $plan->description ?? 'No description' }}
-                </td>
-                <td>
-                    <div class="actions-stack">
-                        <a href="{{ route('admin.plans.edit', $plan->id) }}" class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Edit</a>
-                        <form action="{{ route('admin.plans.destroy', $plan->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this plan?')" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.1); width: 100%;">Delete</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" style="text-align: center; opacity: 0.5; padding: 3rem;">No plans found</td>
-            </tr>
-            @endforelse
+        <tbody id="table-body">
+            @include('admin.plans._table', ['plans' => $plans])
         </tbody>
-        </table>
-    </div>
+    </table>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    'use strict';
+
+    const BASE_URL = '{{ route("admin.plans.index") }}';
+    const DELETE_BASE = '{{ url("rbadmin/plans") }}';
+    const CSRF = '{{ csrf_token() }}';
+
+    const searchInput = document.getElementById('search-input');
+    const tbody = document.getElementById('table-body');
+    const totalCount = document.getElementById('total-count');
+    const searchSpinner = document.getElementById('search-spinner');
+    const toast = document.getElementById('ajax-toast');
+    const toastMsg = document.getElementById('ajax-toast-msg');
+    const toastIcon = document.getElementById('ajax-toast-icon');
+
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        toastIcon.innerHTML = type === 'success'
+            ? '<i class="fas fa-check-circle" style="color:#00ff88;"></i>'
+            : '<i class="fas fa-times-circle" style="color:#ff4d4d;"></i>';
+        toastMsg.textContent = msg;
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.style.transform = 'translateY(120%)';
+            toast.style.opacity = '0';
+        }, 3500);
+    }
+
+    function fetchPlans(search = '') {
+        const url = new URL(BASE_URL);
+        if (search) url.searchParams.set('search', search);
+
+        searchSpinner.style.display = 'inline-flex';
+        tbody.style.opacity = '0.4';
+
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            tbody.innerHTML = data.rows;
+            totalCount.textContent = `${data.total} total plans`;
+            tbody.style.opacity = '1';
+            searchSpinner.style.display = 'none';
+            bindDeleteEvents();
+        })
+        .catch(err => {
+            console.error(err);
+            searchSpinner.style.display = 'none';
+            tbody.style.opacity = '1';
+            showToast('Error loading plans.', 'error');
+        });
+    }
+
+    let searchTimer;
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            fetchPlans(searchInput.value.trim());
+        }, 300);
+    });
+
+    function bindDeleteEvents() {
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const name = this.dataset.name;
+                const row = this.closest('tr');
+
+                if (!confirm(`Are you sure you want to delete plan "${name}"?`)) return;
+
+                row.style.opacity = '0.3';
+                row.style.pointerEvents = 'none';
+
+                fetch(`${DELETE_BASE}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': CSRF,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        row.remove();
+                        showToast(data.message);
+                        fetchPlans(searchInput.value.trim());
+                    } else {
+                        row.style.opacity = '1';
+                        row.style.pointerEvents = 'all';
+                        showToast(data.message || 'Error deleting plan.', 'error');
+                    }
+                })
+                .catch(err => {
+                    row.style.opacity = '1';
+                    row.style.pointerEvents = 'all';
+                    showToast('Network error.', 'error');
+                });
+            });
+        });
+    }
+
+    bindDeleteEvents();
+})();
+</script>
+@endpush

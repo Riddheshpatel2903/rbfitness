@@ -9,9 +9,23 @@ use Illuminate\Support\Str;
 
 class PlanCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = PlanCategory::withCount('plans')->get();
+        $query = PlanCategory::withCount('plans');
+
+        if ($request->search) {
+            $query->where('name', 'like', "%{$request->search}%");
+        }
+
+        $categories = $query->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows' => view('admin.plan_categories._table', compact('categories'))->render(),
+                'total' => $categories->count(),
+            ]);
+        }
+
         return view('admin.plan_categories.index', compact('categories'));
     }
 
@@ -71,10 +85,18 @@ class PlanCategoryController extends Controller
     public function destroy(PlanCategory $planCategory)
     {
         if ($planCategory->plans()->count() > 0) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Cannot delete category with associated plans.'], 400);
+            }
             return back()->with('error', 'Cannot delete category with associated plans.');
         }
 
         $planCategory->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Category deleted successfully.']);
+        }
+
         return redirect()->route('admin.plan_categories.index')->with('success', 'Category deleted successfully.');
     }
 }

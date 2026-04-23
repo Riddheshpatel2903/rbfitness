@@ -17,9 +17,27 @@ class PaymentController extends Controller
         $this->paymentService = $paymentService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $payments = Payment::with(['member', 'plan'])->latest()->paginate(15);
+        $query = Payment::with(['member', 'plan']);
+
+        if ($request->search) {
+            $query->whereHas('member', function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('member_code', 'like', "%{$request->search}%");
+            });
+        }
+
+        $payments = $query->latest()->paginate(20)->withQueryString();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows' => view('admin.payments._table', compact('payments'))->render(),
+                'pagination' => $payments->links()->render(),
+                'total' => $payments->total(),
+            ]);
+        }
+
         return view('admin.payments.index', compact('payments'));
     }
 
@@ -49,6 +67,11 @@ class PaymentController extends Controller
             $request->payment_date
         );
 
-        return redirect()->route('admin.payments.index')->with('success', 'Payment recorded and membership extended.');
+        $msg = 'Payment recorded and membership extended.';
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
+        return redirect()->route('admin.payments.index')->with('success', $msg);
     }
 }

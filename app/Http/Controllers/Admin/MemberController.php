@@ -25,14 +25,25 @@ class MemberController extends Controller
 
         if ($request->search) {
             $query->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('member_code', 'like', "%{$request->search}%");
+                  ->orWhere('member_code', 'like', "%{$request->search}%")
+                  ->orWhere('phone', 'like', "%{$request->search}%");
         }
 
         if ($request->status) {
             $query->where('status', $request->status);
         }
 
-        $members = $query->latest()->paginate(15);
+        $members = $query->latest()->paginate(20)->withQueryString();
+
+        // AJAX request: return rendered partials as JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.members._table', compact('members'))->render(),
+                'pagination' => $members->links()->render(),
+                'total'      => $members->total(),
+            ]);
+        }
+
         return view('admin.members.index', compact('members'));
     }
 
@@ -76,7 +87,12 @@ class MemberController extends Controller
 
         Member::create($data);
 
-        return redirect()->route('admin.members.index')->with('success', 'Member registered successfully.');
+        $msg = 'Member registered successfully.';
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
+        return redirect()->route('admin.members.index')->with('success', $msg);
     }
 
     public function edit(Member $member)
@@ -100,12 +116,22 @@ class MemberController extends Controller
 
         $member->update($request->all());
 
-        return redirect()->route('admin.members.index')->with('success', 'Member updated successfully.');
+        $msg = 'Member updated successfully.';
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
+        return redirect()->route('admin.members.index')->with('success', $msg);
     }
 
     public function destroy(Member $member)
     {
         $member->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Member deleted.']);
+        }
+
         return redirect()->route('admin.members.index')->with('success', 'Member deleted successfully.');
     }
 
@@ -218,6 +244,11 @@ class MemberController extends Controller
         fclose($handle);
 
         $msg = "Import complete: {$imported} members imported, {$skipped} skipped (duplicates / empty rows).";
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
         return redirect()->route('admin.members.index')->with('success', $msg);
     }
 
@@ -305,6 +336,11 @@ class MemberController extends Controller
         fclose($handle);
 
         $msg = "Local CSV import complete: {$imported} members imported, {$skipped} skipped (duplicates / empty rows).";
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
         return redirect()->route('admin.members.index')->with('success', $msg);
     }
 }

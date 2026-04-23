@@ -32,6 +32,10 @@ class DashboardController extends Controller
                 ->take(5)->get(),
         ];
 
+        if (request()->ajax()) {
+            return response()->json($stats);
+        }
+
         return view('admin.dashboard', compact('stats'));
     }
 }

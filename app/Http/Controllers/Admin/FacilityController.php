@@ -9,9 +9,23 @@ use Illuminate\Support\Facades\Storage;
 
 class FacilityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $facilities = Facility::all();
+        $query = Facility::query();
+
+        if ($request->search) {
+            $query->where('title', 'like', "%{$request->search}%");
+        }
+
+        $facilities = $query->get();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows' => view('admin.facilities._table', compact('facilities'))->render(),
+                'total' => $facilities->count(),
+            ]);
+        }
+
         return view('admin.facilities.index', compact('facilities'));
     }
 
@@ -69,9 +83,14 @@ class FacilityController extends Controller
     public function destroy(Facility $facility)
     {
         if ($facility->image) {
-            Storage::disk('public')->delete($facility->image);
+            \App\Helpers\MediaHelper::delete($facility->image);
         }
         $facility->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Facility removed from CMS.']);
+        }
+
         return redirect()->route('admin.facilities.index')->with('success', 'Facility removed from CMS.');
     }
 }
