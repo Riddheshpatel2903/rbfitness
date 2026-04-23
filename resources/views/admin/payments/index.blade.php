@@ -5,7 +5,14 @@
 @section('title_suffix', 'LOGS')
 
 @section('header_actions')
-<a href="{{ route('admin.payments.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> New Payment</a>
+<div style="display: flex; gap: 0.75rem;">
+    <a href="{{ route('admin.payments.export') }}" class="btn btn-ghost" style="border: 1px solid rgba(255,255,255,0.15);">
+        <i class="fas fa-file-export"></i> Export CSV
+    </a>
+    <a href="{{ route('admin.payments.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Payment
+    </a>
+</div>
 @endsection
 
 @section('content')

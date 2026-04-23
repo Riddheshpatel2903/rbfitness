@@ -38,9 +38,22 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             RateLimiter::clear($throttleKey);
 
-            // OTP disabled — go straight to dashboard
-            $request->session()->put('admin_otp_verified', true);
-            return redirect()->route('admin.dashboard');
+            // Generate OTP
+            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $user = Auth::user();
+
+            Otp::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'otp' => Hash::make($otp),
+                    'expires_at' => Carbon::now()->addMinutes(10),
+                ]
+            );
+
+            // Send Email
+            Mail::to($user->email)->send(new OtpMail($otp));
+
+            return redirect()->route('admin.otp.show');
         }
 
         RateLimiter::hit($throttleKey);

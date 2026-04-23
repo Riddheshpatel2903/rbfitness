@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\PlanCategoryController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/plans/category/{slug}', [HomeController::class, 'getPlansByCategory'])->name('plans.category');
@@ -38,17 +39,20 @@ Route::prefix('rbadmin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'otp.verified'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         
+        Route::get('members/export', [MemberController::class, 'exportCsv'])->name('members.export');
         Route::resource('members', MemberController::class);
         Route::post('members/import-csv', [MemberController::class, 'importCsv'])->name('members.import-csv');
         Route::post('members/import-local', [MemberController::class, 'importLocalCsv'])->name('members.import-local');
         Route::patch('plan_categories/{plan_category}/toggle', [PlanCategoryController::class, 'toggleStatus'])->name('plan_categories.toggle');
         Route::resource('plan_categories', PlanCategoryController::class);
         Route::resource('plans', PlanController::class);
+        Route::get('payments/export', [PaymentController::class, 'exportCsv'])->name('payments.export');
         Route::resource('payments', PaymentController::class)->only(['index', 'create', 'store']);
         Route::resource('trainers', TrainerController::class);
         Route::resource('facilities', FacilityController::class);
         Route::get('expenses/export', [ExpenseController::class, 'exportCsv'])->name('expenses.export');
         Route::resource('expenses', ExpenseController::class);
+        Route::resource('users', UserController::class);
         Route::resource('settings', SettingController::class);
     });
 });

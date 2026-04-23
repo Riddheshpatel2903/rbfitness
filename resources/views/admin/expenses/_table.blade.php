@@ -11,11 +11,11 @@
             <br>
             <span style="font-size: 0.7rem; opacity: 0.4;">via {{ $expense->payment_method ?: 'N/A' }}</span>
         </td>
-        <td class="actions-stack">
-            <a href="{{ route('admin.expenses.edit', $expense->id) }}" class="btn btn-ghost" style="padding: 0.6rem; min-width: 44px; height: 44px; border: 1px solid rgba(255,193,7,0.3); display: flex; align-items: center; justify-content: center; border-radius: 0.5rem;" title="Edit">
+        <td class="actions-stack" style="gap: 0.5rem;">
+            <a href="{{ route('admin.expenses.edit', $expense->id) }}" class="btn btn-ghost" style="padding: 0; width: 44px; height: 44px; border: 1px solid rgba(255,193,7,0.4); background: rgba(255,193,7,0.05); display: flex; align-items: center; justify-content: center; border-radius: 0.6rem; transition: all 0.2s;" title="Edit">
                 <i class="fas fa-edit" style="color: var(--gym-yellow); font-size: 1rem;"></i>
             </a>
-            <button type="button" class="btn btn-ghost delete-expense" data-id="{{ $expense->id }}" style="padding: 0.6rem; min-width: 44px; height: 44px; border: 1px solid rgba(255, 77, 77, 0.3); display: flex; align-items: center; justify-content: center; border-radius: 0.5rem;" title="Delete">
+            <button type="button" class="btn btn-ghost delete-expense" data-id="{{ $expense->id }}" style="padding: 0; width: 44px; height: 44px; border: 1px solid rgba(255, 77, 77, 0.4); background: rgba(255, 77, 77, 0.05); display: flex; align-items: center; justify-content: center; border-radius: 0.6rem; transition: all 0.2s;" title="Delete">
                 <i class="fas fa-trash" style="color: #ff4d4d; font-size: 1rem;"></i>
             </button>
         </td>

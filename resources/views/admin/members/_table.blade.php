@@ -28,15 +28,17 @@
         @endif
     </td>
     <td>
-        <div class="actions-stack">
-            <a href="{{ route('admin.members.edit', $member->id) }}"
-                class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Edit</a>
-            <button type="button"
-                class="btn btn-ghost btn-delete-member"
-                data-id="{{ $member->id }}"
-                data-name="{{ $member->name }}"
-                style="padding: 0.4rem 0.8rem; font-size: 0.75rem; color: #ff4d4d; border: 1px solid rgba(255,77,77,0.2); width: 100%;">
-                Delete
+        <div class="actions-stack" style="gap: 0.5rem;">
+            <a href="{{ route('admin.members.edit', $member->id) }}" 
+               class="btn btn-ghost" style="padding: 0; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; border-radius: 0.6rem; transition: all 0.2s;" title="Edit">
+               <i class="fas fa-edit" style="color: #fff; font-size: 1rem;"></i>
+            </a>
+            <button type="button" 
+                class="btn btn-ghost btn-delete-member" 
+                data-id="{{ $member->id }}" 
+                data-name="{{ $member->name }}" 
+                style="padding: 0; width: 44px; height: 44px; border: 1px solid rgba(255,77,77,0.4); background: rgba(255,77,77,0.05); display: flex; align-items: center; justify-content: center; border-radius: 0.6rem; transition: all 0.2s;" title="Delete">
+                <i class="fas fa-trash" style="color: #ff4d4d; font-size: 1rem;"></i>
             </button>
         </div>
     </td>

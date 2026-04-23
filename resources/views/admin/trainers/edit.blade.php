@@ -36,10 +36,12 @@
 
         <div style="margin-bottom: 3rem;">
             <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Profile Image (Optional)</label>
-            <input type="file" name="image" style="width: 100%; color: rgba(255,255,255,0.6);">
-            @if(isset($trainer) && @$trainer->image)
-                <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.5rem;">Current: {{ $trainer->image }}</p>
-            @endif
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
+                @if(isset($trainer) && @$trainer->image)
+                    <img src="{{ \App\Helpers\MediaHelper::getUrl($trainer->image) }}" alt="Preview" style="height: 80px; width: 80px; object-fit: cover; border-radius: 0.75rem; border: 2px solid rgba(255,193,7,0.3);">
+                @endif
+                <input type="file" name="image" style="flex: 1; color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.5rem; border: 1px dashed rgba(255,255,255,0.1);">
+            </div>
             @error('image')<p style="color: #ff4d4d; font-size: 0.8rem; margin-top: 0.5rem;">{{ $message }}</p>@enderror
         </div>
 

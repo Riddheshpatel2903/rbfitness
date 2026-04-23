@@ -30,11 +30,20 @@
 
         <div style="margin-bottom: 3rem;">
             <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Image or Video</label>
-            <input type="file" name="image" style="width: 100%; color: rgba(255,255,255,0.6);">
-            @if(isset($facility) && @$facility->image)
-                <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.5rem;">Current file: {{ $facility->image }}</p>
-            @endif
-            <p style="font-size: 0.75rem; opacity: 0.4; margin-top: 0.5rem;">Accepted formats: JPEG, PNG, MP4, MOV</p>
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
+                @if(isset($facility) && @$facility->image)
+                    @php $ext = pathinfo($facility->image, PATHINFO_EXTENSION); @endphp
+                    @if(in_array(strtolower($ext), ['mp4', 'mov', 'MOV']))
+                         <div style="height: 80px; width: 80px; background: rgba(255,193,7,0.1); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,193,7,0.3);">
+                            <i class="fas fa-play-circle" style="color: var(--gym-yellow); font-size: 1.5rem;"></i>
+                        </div>
+                    @else
+                        <img src="{{ \App\Helpers\MediaHelper::getUrl($facility->image) }}" alt="Preview" style="height: 80px; width: 80px; object-fit: cover; border-radius: 0.75rem; border: 2px solid rgba(255,193,7,0.3);">
+                    @endif
+                @endif
+                <input type="file" name="image" style="flex: 1; color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.5rem; border: 1px dashed rgba(255,255,255,0.1);">
+            </div>
+            <p style="font-size: 0.75rem; opacity: 0.4;">Accepted formats: JPEG, PNG, MP4, MOV. Max 50MB for video.</p>
             @error('image')<p style="color: #ff4d4d; font-size: 0.8rem; margin-top: 0.5rem;">{{ $message }}</p>@enderror
         </div>
 

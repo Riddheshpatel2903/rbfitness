@@ -8,13 +8,16 @@
 
 /* ── Custom Properties ──────────────────────────────────────── */
 :root {
-  --gym-yellow: hsl(54, 100%, 50%);
-  --gym-yellow-glow: hsla(54, 100%, 50%, 0.4);
-  --gym-dark: hsl(0, 0%, 7%);
-  --gym-darker: hsl(0, 0%, 4%);
-  --gym-darkest: hsl(0, 0%, 5%);
-  --gym-card: hsl(0, 0%, 10%);
-  --radius: 0.5rem;
+  --gym-yellow: #FFD700;
+  --gym-yellow-glow: rgba(255, 215, 0, 0.4);
+  --gym-gold-gradient: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+  --gym-dark: #070707;
+  --gym-darker: #040404;
+  --gym-darkest: #010101;
+  --gym-card: rgba(30, 30, 30, 0.6);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --radius: 1rem;
   --font-display: 'Oswald', sans-serif;
   --font-body: 'Inter', sans-serif;
 }
@@ -390,22 +393,48 @@ button {
 }
 
 .btn-primary {
-  padding: 1rem 2rem;
-  background: var(--gym-yellow);
+  padding: 1rem 2.5rem;
+  background: var(--gym-gold-gradient);
   color: #000;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   border-radius: 9999px;
-  font-size: 1.25rem;
-  transition: all 0.2s, transform 0.2s;
+  font-size: 1.15rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: inline-block;
   border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  transition: 0.6s;
+  pointer-events: none;
+}
+
+.btn-primary:hover::after {
+  left: 100%;
+  top: 100%;
 }
 
 .btn-primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px hsla(54, 100%, 50%, 0.3);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 215, 0, 0.25);
 }
 
 .btn-outline {
@@ -443,14 +472,15 @@ button {
 }
 
 .stats-inner {
-  max-width: 56rem;
+  max-width: 60rem;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.20);
-  padding: 1rem 1.5rem;
+  background: rgba(15, 15, 15, 0.4);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
 }
 
 .stats-grid {
@@ -957,22 +987,13 @@ button {
 }
 
 .plan-card.featured {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), hsla(54, 100%, 50%, 0.05));
-  border-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid var(--gym-yellow);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(0, 0, 0, 0.9));
+  transform: scale(1.05);
+  z-index: 2;
 }
 
 .plan-card.featured:hover {
-  border-color: var(--gym-yellow);
-  box-shadow: 0 20px 50px hsla(54, 100%, 50%, 0.25);
-}
-
-@media (min-width: 768px) {
-  .plan-card.featured {
-    transform: scale(1.05);
-  }
-
-  .plan-card.featured:hover {
-    transform: scale(1.08) translateY(-10px);
   }
 }
 

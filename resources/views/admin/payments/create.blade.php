@@ -65,7 +65,37 @@
         <div style="margin-bottom: 3rem;">
             <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Payment Date</label>
             <input type="date" name="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;" required>
-            <p class="error-msg" id="error-payment_date" style="color: #ff4d4d; font-size: 0.8rem; margin-top: 0.5rem; display:none;"></p>
+            @error('payment_date')<p style="color: #ff4d4d; font-size: 0.8rem; margin-top: 0.5rem;">{{ $message }}</p>@enderror
+        </div>
+
+        <div style="margin-bottom: 3rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+            <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 1rem;">Renewal Calculation Mode</label>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
+                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 0.75rem; border-radius: 0.5rem; background: rgba(255,255,255,0.02);">
+                    <input type="radio" name="renewal_mode" value="auto" checked style="accent-color: var(--gym-yellow);">
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem;">Auto System Logic</div>
+                        <div style="font-size: 0.75rem; opacity: 0.5;">Auto-anchors back if expired < 7 days, else starts from today.</div>
+                    </div>
+                </label>
+
+                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 0.75rem; border-radius: 0.5rem;">
+                    <input type="radio" name="renewal_mode" value="continuous" style="accent-color: var(--gym-yellow);">
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem;">Continuous (No Free Days)</div>
+                        <div style="font-size: 0.75rem; opacity: 0.5;">Anchors the new plan to the PREVIOUS expiry date.</div>
+                    </div>
+                </label>
+
+                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 0.75rem; border-radius: 0.5rem;">
+                    <input type="radio" name="renewal_mode" value="new_start" style="accent-color: var(--gym-yellow);">
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem;">Fresh Start / Re-join</div>
+                        <div style="font-size: 0.75rem; opacity: 0.5;">Starts the new plan from the PAYMENT DATE (Today).</div>
+                    </div>
+                </label>
+            </div>
         </div>
 
         <div class="card" style="background: rgba(255, 223, 0, 0.05); border-color: rgba(255, 223, 0, 0.1); padding: 1.5rem; margin-bottom: 2rem;">

@@ -3,10 +3,11 @@
 @section('content')
   <!-- HERO SECTION -->
   <section id="home">
-    <video id="hero-bg-video" autoplay muted loop playsinline preload="auto">
-      <source id="hero-video-src" src="{{ asset('assets/gym_bg.mp4') }}" type="video/mp4" />
+    <video id="hero-bg-video" autoplay muted loop playsinline preload="auto" poster="{{ asset('assets/about_us.jpg') }}">
+      <source src="{{ asset('assets/gym_bg.mp4') }}" type="video/mp4">
     </video>
-    <div class="hero-overlay"></div>
+    <div class="hero-overlay" style="background: radial-gradient(circle at center, transparent 0%, var(--gym-dark) 90%); opacity: 0.8;"></div>
+    <div class="hero-overlay" style="background: linear-gradient(0deg, var(--gym-dark) 0%, transparent 50%); opacity: 1;"></div>
     <div class="hero-content">
       <div class="reveal">
         <h1 class="hero-title">
@@ -76,8 +77,9 @@
   <!-- FACILITIES SECTION -->
   <section id="facilities">
     <div class="section-inner-wide">
-      <div class="section-header reveal">
-        <h2 class="section-title">OUR <span class="red">FACILITIES</span></h2>
+      <div class="section-header reveal" style="position: relative;">
+        <span style="position: absolute; top: -40%; left: 50%; transform: translateX(-50%); font-size: 8rem; font-family: var(--font-display); font-weight: 900; color: rgba(255,255,255,0.03); white-space: nowrap; pointer-events: none; text-transform: uppercase;">STRENGTH</span>
+        <h2 class="section-title" style="position: relative; z-index: 1;">OUR <span class="red">FACILITIES</span></h2>
       </div>
       <div class="facilities-grid">
         @forelse($facilities as $index => $facility)
@@ -145,8 +147,9 @@
   <!-- TRAINERS SECTION -->
   <section id="trainers">
     <div class="section-inner">
-      <div class="section-header reveal">
-        <h2 class="section-title">MEET YOUR <span class="red">TRAINER</span></h2>
+      <div class="section-header reveal" style="position: relative;">
+        <span style="position: absolute; top: -40%; left: 50%; transform: translateX(-50%); font-size: 8rem; font-family: var(--font-display); font-weight: 900; color: rgba(255,255,255,0.03); white-space: nowrap; pointer-events: none; text-transform: uppercase;">ELITE</span>
+        <h2 class="section-title" style="position: relative; z-index: 1;">MEET YOUR <span class="red">TRAINER</span></h2>
       </div>
       <div class="trainers-grid">
         @foreach($trainers as $trainer)
@@ -249,25 +252,26 @@
       </div>
     </div>
   </section>
+
+  <script>
+    /* Scroll Progress Bar */
+    window.addEventListener('scroll', () => {
+      const scrollProgress = document.getElementById('scroll-progress');
+      const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercent = (window.scrollY / scrollTotal) * 100;
+      scrollProgress.style.width = scrollPercent + '%';
+    });
+  </script>
 @endsection
 
 @push('scripts')
 <script>
-    /* Hero video update */
+    /* Hero video styling fix */
     (function () {
-      var src = document.getElementById('hero-video-src');
       var vid = document.getElementById('hero-bg-video');
-      function updateHeroVideo() {
-        var newSrc = '{{ asset("assets/gym_bg.mp4") }}';
-        if (src.getAttribute('src') !== newSrc) {
-          src.setAttribute('src', newSrc);
-          vid.load();
-          vid.play().catch(function () { });
-        }
+      if (vid) {
         vid.style.transform = 'translate(-50%, -50%)';
       }
-      updateHeroVideo();
-      window.addEventListener('resize', updateHeroVideo, { passive: true });
     })();
 
     /* AJAX Plan Loading */

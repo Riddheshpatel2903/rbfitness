@@ -20,6 +20,8 @@
 </head>
 
 <body>
+  <div id="scroll-progress" style="position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #FFD700, #B8860B); width: 0%; z-index: 1000; transition: width 0.1s ease-out;"></div>
+
 
   <!-- NAVBAR -->
   <header id="navbar">
@@ -183,6 +185,16 @@
       // Fail-safe: if after 2 seconds elements aren't visible, show them
       setTimeout(showAll, 2000);
     })();
+
+    /* Scroll Progress */
+    window.addEventListener('scroll', () => {
+      const scrollProgress = document.getElementById('scroll-progress');
+      if(scrollProgress) {
+        const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercent = (window.scrollY / scrollTotal) * 100;
+        scrollProgress.style.width = scrollPercent + '%';
+      }
+    });
   </script>
   @stack('scripts')
 </body>

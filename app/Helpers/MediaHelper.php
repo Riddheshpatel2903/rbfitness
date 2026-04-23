@@ -17,40 +17,59 @@ class MediaHelper
 
         if ($cloudinaryUrl) {
             try {
-                // Initialize Cloudinary from the environment variable (cloudinary://key:secret@name)
                 $cloudinary = new Cloudinary($cloudinaryUrl);
-
                 $upload = $cloudinary->uploadApi()->upload($file->getRealPath(), [
                     'folder' => 'rbfitness/' . $folder,
-                    'resource_type' => 'auto', // Detect image or video
+                    'resource_type' => 'auto',
                 ]);
-
                 return $upload['secure_url'];
             } catch (\Exception $e) {
-                // Fall back to local if Cloudinary fails
                 \Log::error('Cloudinary upload failed: ' . $e->getMessage());
             }
         }
 
-        // Default Local Storage (Ephemeral on Render)
-        $path = $file->store($folder, 'public');
-        return asset('storage/' . $path);
+        // Default Local Storage (Shared Hosting compatible)
+        // Ensure required directories exist
+        if (!Storage::disk('public')->exists('trainers')) {
+            Storage::disk('public')->makeDirectory('trainers');
+        }
+        if (!Storage::disk('public')->exists('facilities')) {
+            Storage::disk('public')->makeDirectory('facilities');
+        }
+
+        // Store file and return relative path (e.g., trainers/abc.png)
+        return $file->store($folder, 'public');
     }
 
     /**
-     * Note: We usually don't delete from Cloudinary automatically in a simple implementation,
-     * but we provide this for consistency.
+     * Delete a file from storage.
      */
-    public static function delete($url)
+    public static function delete($path)
     {
-        if (str_contains($url, 'cloudinary')) {
-            // Deleting from cloudinary requires parsing the public_id, 
-            // commonly skipped in MVPs to avoid complex regex.
+        if (!$path) return;
+
+        if (str_contains($path, 'cloudinary')) {
             return;
         }
 
-        // Local deletion
-        $path = str_replace(asset('storage/'), '', $url);
-        Storage::disk('public')->delete($path);
+        // Local deletion - handle both full URLs (legacy) and relative paths
+        $cleanPath = str_replace(asset('storage/'), '', $path);
+        $cleanPath = ltrim($cleanPath, '/');
+        
+        Storage::disk('public')->delete($cleanPath);
+    }
+
+    /**
+     * Helper to get the correct URL for a path
+     */
+    public static function getUrl($path)
+    {
+        if (!$path) return asset('images/placeholder.png');
+
+        if (str_contains($path, 'http')) {
+            return $path;
+        }
+
+        return asset('storage/' . $path);
     }
 }

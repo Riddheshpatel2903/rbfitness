@@ -33,18 +33,40 @@ class PaymentService
             $plan = Plan::findOrFail($planId);
             
             // Calculate new expiry date
-            // Logic: 
-            // 1. If member owes money (balance < 0), this is the Enrolment Period. 
-            //    Expiry is anchored to JOIN_DATE.
-            // 2. If member is paid up (balance >= 0), this is a Renewal. 
-            //    Expiry is anchored to PAYMENT_DATE + Plan Duration.
-            if ($member->balance < 0) {
-                $newExpiry = Carbon::parse($member->join_date)->addDays($plan->duration_days);
-            } else {
-                $newExpiry = Carbon::parse($paymentDate)->addDays($plan->duration_days);
-            }
+            // SMART LOGIC:
+            // 1. If it's a new enrolment (balance < 0), anchor to JOIN_DATE.
+            // 2. If it's a renewal:
+            //    - If the gap between previous expiry and today is small (< 7 days), 
+            //      it's a "Late Payment". Anchor to OLD_EXPIRY.
+            //    - If the gap is large (>= 7 days), it's a "Re-join". 
+            //      Anchor to PAYMENT_DATE (Today).
             
-            $newExpiryDate = $newExpiry->toDateString();
+            $now = Carbon::parse($paymentDate);
+            $oldExpiry = $member->expiry_date ? Carbon::parse($member->expiry_date) : null;
+            
+            if ($member->balance < 0) {
+                // New Enrolment
+                $baseDate = Carbon::parse($member->join_date);
+            } else if ($oldExpiry) {
+                $daysExpired = $oldExpiry->diffInDays($now, false); // positive if expired
+                
+                // If admin forced a mode via request (to be added)
+                if (request('renewal_mode') === 'continuous') {
+                    $baseDate = $oldExpiry;
+                } else if (request('renewal_mode') === 'new_start') {
+                    $baseDate = $now;
+                } 
+                // Auto Logic: 7 day threshold
+                else if ($daysExpired > 0 && $daysExpired < 7) {
+                    $baseDate = $oldExpiry; // Anchor to old one (don't give free days)
+                } else {
+                    $baseDate = $now; // Expired for long or Renewing Early
+                }
+            } else {
+                $baseDate = $now;
+            }
+
+            $newExpiryDate = $baseDate->addDays($plan->duration_days)->toDateString();
 
             // Create payment record
             $payment = Payment::create([

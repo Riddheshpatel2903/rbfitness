@@ -88,4 +88,44 @@ class PaymentController extends Controller
 
         return redirect()->route('admin.payments.index')->with('success', $msg);
     }
+
+    public function exportCsv()
+    {
+        $payments = Payment::with('member', 'plan')
+            ->whereMonth('payment_date', now()->month)
+            ->whereYear('payment_date', now()->year)
+            ->latest()
+            ->get();
+
+        $filename = "payments_report_" . now()->format('Y_m') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Date', 'Member Code', 'Member Name', 'Plan', 'Amount (INR)', 'New Expiry'];
+
+        $callback = function() use($payments, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($payments as $payment) {
+                fputcsv($file, [
+                    $payment->payment_date->format('d-m-Y'),
+                    $payment->member->member_code,
+                    $payment->member->name,
+                    $payment->plan?->name ?: 'N/A',
+                    number_format($payment->amount, 2),
+                    $payment->expiry_date->format('d-m-Y')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

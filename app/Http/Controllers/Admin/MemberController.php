@@ -346,4 +346,43 @@ class MemberController extends Controller
 
         return redirect()->route('admin.members.index')->with('success', $msg);
     }
+
+    public function exportCsv()
+    {
+        $members = Member::with('plan')->latest()->get();
+
+        $filename = "members_list_" . now()->format('Y_m_d') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Member Code', 'Name', 'Phone', 'Email', 'Plan', 'Join Date', 'Expiry Date', 'Status', 'Balance'];
+
+        $callback = function() use($members, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($members as $member) {
+                fputcsv($file, [
+                    $member->member_code,
+                    $member->name,
+                    $member->phone,
+                    $member->email ?: 'N/A',
+                    $member->plan?->name ?: 'No Plan',
+                    $member->join_date->format('d-m-Y'),
+                    $member->expiry_date->format('d-m-Y'),
+                    ucfirst($member->status),
+                    $member->balance
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

@@ -6,14 +6,17 @@
 
 @section('header_actions')
 <div style="display:flex;gap:0.75rem;align-items:center;">
-    <a href="{{ route('admin.members.create') }}" class="btn btn-primary">
-        <i class="fas fa-user-plus"></i> Register
+    <a href="{{ route('admin.members.export') }}" class="btn btn-ghost" style="border:1px solid rgba(255,255,255,0.15); padding:0.6rem 0.8rem; font-size:0.85rem;">
+        <i class="fas fa-file-export"></i> Export
     </a>
     <button type="button" class="btn btn-ghost"
         onclick="document.getElementById('importModal').classList.add('open')"
-        style="border:1px solid rgba(255,255,255,0.15);">
-        <i class="fas fa-file-import"></i> Import CSV
+        style="border:1px solid rgba(255,255,255,0.15); padding:0.6rem 0.8rem; font-size:0.85rem;">
+        <i class="fas fa-file-import"></i> Import
     </button>
+    <a href="{{ route('admin.members.create') }}" class="btn btn-primary" style="padding:0.65rem 1.25rem;">
+        <i class="fas fa-plus"></i> Register
+    </a>
 </div>
 @endsection
 
