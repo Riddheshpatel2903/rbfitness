@@ -220,4 +220,91 @@ class MemberController extends Controller
         $msg = "Import complete: {$imported} members imported, {$skipped} skipped (duplicates / empty rows).";
         return redirect()->route('admin.members.index')->with('success', $msg);
     }
+
+    // -------------------------------------------------------
+    // Import from local file (active_members.csv in project root)
+    // -------------------------------------------------------
+    public function importLocalCsv()
+    {
+        $filePath = base_path('active_members.csv');
+
+        if (! file_exists($filePath)) {
+            return back()->with('error', 'Local file not found: active_members.csv does not exist in the project root.');
+        }
+
+        $defaultPlan = Plan::first();
+        if (! $defaultPlan) {
+            return back()->with('error', 'No plans found. Please create a plan first before importing members.');
+        }
+
+        $handle = fopen($filePath, 'r');
+        $headers = fgetcsv($handle);
+        $headers = array_map(fn($h) => strtolower(trim($h)), $headers);
+
+        $imported = 0;
+        $skipped  = 0;
+
+        $lastMember = Member::orderBy('id', 'desc')->first();
+        $nextNumber = 1;
+        if ($lastMember) {
+            preg_match('/\d+$/', $lastMember->member_code, $matches);
+            $nextNumber = isset($matches[0]) ? (int)$matches[0] + 1 : 1;
+        }
+
+        while (($row = fgetcsv($handle)) !== false) {
+            if (count($row) !== count($headers)) { $skipped++; continue; }
+            $data = array_combine($headers, $row);
+
+            $name = trim($data['name'] ?? '');
+            if (! $name) { $skipped++; continue; }
+
+            $phoneClean = preg_replace('/[^0-9]/', '', $data['phone'] ?? '');
+            if (! $phoneClean) { $phoneClean = '0000000000'; }
+
+            $renewalRaw = trim($data['renewaldate'] ?? '');
+            try {
+                $expiryDate = $renewalRaw ? Carbon::createFromFormat('d-m-Y', $renewalRaw)->format('Y-m-d') : now()->format('Y-m-d');
+            } catch (\Exception $e) {
+                $expiryDate = now()->format('Y-m-d');
+            }
+
+            $payRaw = trim($data['paymentdate'] ?? '');
+            try {
+                $joinDate = $payRaw ? Carbon::createFromFormat('d-m-Y', $payRaw)->format('Y-m-d') : $expiryDate;
+            } catch (\Exception $e) {
+                $joinDate = $expiryDate;
+            }
+
+            if (Member::where('name', $name)->exists()) { $skipped++; continue; }
+
+            $memberCode = 'RB' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            while (Member::where('member_code', $memberCode)->exists()) {
+                $nextNumber++;
+                $memberCode = 'RB' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            }
+
+            $status = Carbon::parse($expiryDate)->isPast() ? 'expired' : 'active';
+
+            Member::create([
+                'name'        => $name,
+                'phone'       => $phoneClean,
+                'email'       => null,
+                'member_code' => $memberCode,
+                'plan_id'     => $defaultPlan->id,
+                'join_date'   => $joinDate,
+                'expiry_date' => $expiryDate,
+                'status'      => $status,
+                'balance'     => 0,
+                'grace_days'  => 3,
+            ]);
+
+            $nextNumber++;
+            $imported++;
+        }
+
+        fclose($handle);
+
+        $msg = "Local CSV import complete: {$imported} members imported, {$skipped} skipped (duplicates / empty rows).";
+        return redirect()->route('admin.members.index')->with('success', $msg);
+    }
 }
