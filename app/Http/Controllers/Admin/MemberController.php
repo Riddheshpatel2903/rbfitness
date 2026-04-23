@@ -24,9 +24,12 @@ class MemberController extends Controller
         $query = Member::with('plan');
 
         if ($request->search) {
-            $query->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('member_code', 'like', "%{$request->search}%")
-                  ->orWhere('phone', 'like', "%{$request->search}%");
+            $search = strtolower($request->search);
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(member_code) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(phone) LIKE ?', ["%{$search}%"]);
+            });
         }
 
         if ($request->status) {

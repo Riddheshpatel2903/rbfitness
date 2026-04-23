@@ -22,23 +22,37 @@ class PaymentController extends Controller
         $query = Payment::with(['member', 'plan']);
 
         if ($request->search) {
-            $query->whereHas('member', function($q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('member_code', 'like', "%{$request->search}%");
+            $search = strtolower($request->search);
+            $query->whereHas('member', function($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(member_code) LIKE ?', ["%{$search}%"]);
             });
         }
 
         $payments = $query->latest()->paginate(20)->withQueryString();
+
+        // Calculate Stats for the top bar
+        $stats = [
+            'monthly_collected' => Payment::whereMonth('payment_date', now()->month)
+                                        ->whereYear('payment_date', now()->year)
+                                        ->sum('amount'),
+            'paid_members'      => Member::where('balance', '>=', 0)->count(),
+            'pending_members'   => Member::where('balance', '<', 0)->count(),
+            'half_paid_members' => Member::where('balance', '<', 0)
+                                        ->whereHas('payments')
+                                        ->count(),
+        ];
 
         if ($request->ajax()) {
             return response()->json([
                 'rows' => view('admin.payments._table', compact('payments'))->render(),
                 'pagination' => $payments->links()->render(),
                 'total' => $payments->total(),
+                'stats' => $stats, // Pass stats for AJAX refresh if needed
             ]);
         }
 
-        return view('admin.payments.index', compact('payments'));
+        return view('admin.payments.index', compact('payments', 'stats'));
     }
 
     public function create(Request $request)

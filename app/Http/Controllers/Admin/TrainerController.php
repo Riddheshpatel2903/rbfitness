@@ -14,8 +14,11 @@ class TrainerController extends Controller
         $query = Trainer::query();
 
         if ($request->search) {
-            $query->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('specialization', 'like', "%{$request->search}%");
+            $search = strtolower($request->search);
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(specialization) LIKE ?', ["%{$search}%"]);
+            });
         }
 
         $trainers = $query->get();

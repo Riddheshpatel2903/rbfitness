@@ -13,7 +13,8 @@ class PlanController extends Controller
         $query = Plan::query();
 
         if ($request->search) {
-            $query->where('name', 'like', "%{$request->search}%");
+            $search = strtolower($request->search);
+            $query->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
         }
 
         $plans = $query->get();

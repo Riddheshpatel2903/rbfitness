@@ -14,7 +14,8 @@ class FacilityController extends Controller
         $query = Facility::query();
 
         if ($request->search) {
-            $query->where('title', 'like', "%{$request->search}%");
+            $search = strtolower($request->search);
+            $query->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"]);
         }
 
         $facilities = $query->get();

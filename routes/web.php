@@ -46,6 +46,7 @@ Route::prefix('rbadmin')->name('admin.')->group(function () {
         Route::resource('payments', PaymentController::class)->only(['index', 'create', 'store']);
         Route::resource('trainers', TrainerController::class);
         Route::resource('facilities', FacilityController::class);
+        Route::resource('expenses', ExpenseController::class);
         Route::resource('settings', SettingController::class);
     });
 });

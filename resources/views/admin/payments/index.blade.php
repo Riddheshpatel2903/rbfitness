@@ -23,6 +23,26 @@
     <span id="ajax-toast-msg" style="font-size:0.9rem;font-weight:500;"></span>
 </div>
 
+{{-- Payment Statistics --}}
+<div class="grid-stats" style="margin-bottom: 2rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+    <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+        <p style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em;">Monthly Fees</p>
+        <h3 id="stat-monthly" style="font-family: 'Oswald', sans-serif; font-size: 1.75rem; color: #00ff88;">₹{{ number_format($stats['monthly_collected'], 0) }}</h3>
+    </div>
+    <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+        <p style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em;">Fees Paid Members</p>
+        <h3 id="stat-paid" style="font-family: 'Oswald', sans-serif; font-size: 1.75rem; color: #4dff4d;">{{ $stats['paid_members'] }}</h3>
+    </div>
+    <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+        <p style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em;">Fees Pending</p>
+        <h3 id="stat-pending" style="font-family: 'Oswald', sans-serif; font-size: 1.75rem; color: #ff4d4d;">{{ $stats['pending_members'] }}</h3>
+    </div>
+    <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+        <p style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em;">Half Paid Members</p>
+        <h3 id="stat-half" style="font-family: 'Oswald', sans-serif; font-size: 1.75rem; color: var(--gym-yellow);">{{ $stats['half_paid_members'] }}</h3>
+    </div>
+</div>
+
 <div class="card">
     <div class="filter-container" style="margin-bottom: 2rem;">
         <div style="position:relative;flex:1;max-width:400px;">
@@ -107,6 +127,15 @@
             tbody.innerHTML = data.rows;
             paginationContainer.innerHTML = data.pagination;
             totalCount.textContent = `${data.total} total payments`;
+            
+            // Update stats
+            if (data.stats) {
+                document.getElementById('stat-monthly').textContent = '₹' + parseInt(data.stats.monthly_collected).toLocaleString();
+                document.getElementById('stat-paid').textContent = data.stats.paid_members;
+                document.getElementById('stat-pending').textContent = data.stats.pending_members;
+                document.getElementById('stat-half').textContent = data.stats.half_paid_members;
+            }
+
             tbody.style.opacity = '1';
             searchSpinner.style.display = 'none';
             bindPaginationLinks();

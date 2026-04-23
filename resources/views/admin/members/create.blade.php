@@ -56,10 +56,10 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
             <div>
                 <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Membership Plan</label>
-                <select name="plan_id" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;" required>
+                <select id="plan-selector" name="plan_id" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;" required>
                     <option value="" disabled selected>Select a plan...</option>
                     @foreach($plans as $plan)
-                        <option value="{{ $plan->id }}" {{ old('plan_id') == $plan->id ? 'selected' : '' }}>
+                        <option value="{{ $plan->id }}" data-duration="{{ $plan->duration_days }}" {{ old('plan_id') == $plan->id ? 'selected' : '' }}>
                             {{ $plan->name }} ({{ $plan->duration_days }} Days - ₹{{ number_format($plan->price, 2) }})
                         </option>
                     @endforeach
@@ -68,8 +68,19 @@
             </div>
             <div>
                 <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Join Date</label>
-                <input type="date" name="join_date" value="{{ old('join_date', date('Y-m-d')) }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;" required>
+                <input type="date" id="join-date" name="join_date" value="{{ old('join_date', date('Y-m-d')) }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 1rem;" required>
                 <p class="error-msg" id="error-join_date" style="color: #ff4d4d; font-size: 0.8rem; margin-top: 0.5rem; display:none;"></p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+            <div>
+                <label style="display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem;">Expiry Date (Auto)</label>
+                <input type="date" id="expiry-date" name="expiry_date" value="{{ old('expiry_date') }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: var(--gym-yellow); font-size: 1rem;" required>
+                <p class="error-msg" id="error-expiry_date" style="color: #ff4d4d; font-size: 0.8rem; margin-top: 0.5rem; display:none;"></p>
+            </div>
+            <div>
+                 <!-- Spacer -->
             </div>
         </div>
 
@@ -170,6 +181,35 @@
             btnSpinner.style.display = 'none';
         }
     });
+
+    // Auto calculate expiry date
+    const planSelector = document.getElementById('plan-selector');
+    const joinDateInput = document.getElementById('join-date');
+    const expiryDateInput = document.getElementById('expiry-date');
+
+    function calculateExpiry() {
+        if (!planSelector.value || !joinDateInput.value) return;
+
+        const duration = parseInt(planSelector.options[planSelector.selectedIndex].dataset.duration);
+        const joinDate = new Date(joinDateInput.value);
+        
+        if (isNaN(joinDate.getTime())) return;
+
+        const expiryDate = new Date(joinDate);
+        expiryDate.setDate(expiryDate.getDate() + duration);
+
+        const yyyy = expiryDate.getFullYear();
+        const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(expiryDate.getDate()).padStart(2, '0');
+        
+        expiryDateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    planSelector.addEventListener('change', calculateExpiry);
+    joinDateInput.addEventListener('change', calculateExpiry);
+    
+    // Initial calculation if values exist
+    calculateExpiry();
 })();
 </script>
 @endpush

@@ -339,6 +339,15 @@
             .btn-menu { padding: 0.55rem 0.7rem; font-size: 1rem; }
         }
 
+        select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        select:focus {
+            outline: none;
+            border-color: var(--gym-yellow);
+            box-shadow: 0 0 0 2px rgba(255, 223, 0, 0.1);
+        }
         .stack-column { display: flex; flex-direction: column; gap: 2rem; }
         .card-accent-orange { border-top: 4px solid #ffb34d !important; }
         .card-accent-red { border-top: 4px solid #ff4d4d !important; }
@@ -378,6 +387,9 @@
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.facilities.index') }}" class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}">Facilities</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.expenses.index') }}" class="nav-link {{ request()->routeIs('admin.expenses.*') ? 'active' : '' }}">Revenue & Expenses</a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Settings</a>

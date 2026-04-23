@@ -14,7 +14,8 @@ class PlanCategoryController extends Controller
         $query = PlanCategory::withCount('plans');
 
         if ($request->search) {
-            $query->where('name', 'like', "%{$request->search}%");
+            $search = strtolower($request->search);
+            $query->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
         }
 
         $categories = $query->get();
