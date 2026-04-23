@@ -136,7 +136,7 @@
             </div>
         @endif
 
-        <form action="{{ route('members.import-csv') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.members.import-csv') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div style="margin-bottom:1.25rem;">
                 <label style="display:block;font-size:0.85rem;opacity:0.7;margin-bottom:0.5rem;">Select CSV File</label>
