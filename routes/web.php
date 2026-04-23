@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\TrainerController;
 use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\PlanCategoryController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ExpenseController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/plans/category/{slug}', [HomeController::class, 'getPlansByCategory'])->name('plans.category');
