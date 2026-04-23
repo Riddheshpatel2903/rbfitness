@@ -38,6 +38,7 @@ Route::prefix('rbadmin')->name('admin.')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         
         Route::resource('members', MemberController::class);
+        Route::post('members/import-csv', [MemberController::class, 'importCsv'])->name('members.import-csv');
         Route::patch('plan_categories/{plan_category}/toggle', [PlanCategoryController::class, 'toggleStatus'])->name('plan_categories.toggle');
         Route::resource('plan_categories', PlanCategoryController::class);
         Route::resource('plans', PlanController::class);
